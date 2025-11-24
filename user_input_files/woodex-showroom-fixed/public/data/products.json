@@ -1,0 +1,96 @@
+{
+  "products": [
+    {
+      "id": "EXD-001",
+      "name": "Executive Desk Premium",
+      "category": "Executive Desks",
+      "room": "executive",
+      "basePrice": 85000,
+      "dimensions": "180cm x 90cm x 75cm",
+      "description": "Premium executive desk with built-in cable management and storage",
+      "hotspot": { "x": 35, "y": 50 }
+    },
+    {
+      "id": "EXC-001",
+      "name": "Executive Chair Deluxe",
+      "category": "Seating",
+      "room": "executive",
+      "basePrice": 45000,
+      "dimensions": "70cm x 70cm x 120cm",
+      "description": "Ergonomic high-back executive chair with lumbar support",
+      "hotspot": { "x": 45, "y": 55 }
+    },
+    {
+      "id": "WKS-001",
+      "name": "Workstation Pod 4",
+      "category": "Workstations",
+      "room": "workstation",
+      "basePrice": 120000,
+      "dimensions": "240cm x 120cm x 75cm",
+      "description": "Modern 4-person workstation with privacy screens",
+      "hotspot": { "x": 50, "y": 50 }
+    },
+    {
+      "id": "CNF-001",
+      "name": "Conference Table Elite",
+      "category": "Conference Tables",
+      "room": "conference",
+      "basePrice": 150000,
+      "dimensions": "360cm x 120cm x 75cm",
+      "description": "12-person conference table with integrated power outlets",
+      "hotspot": { "x": 50, "y": 45 }
+    },
+    {
+      "id": "STO-001",
+      "name": "Storage Cabinet Tall",
+      "category": "Storage",
+      "room": "executive",
+      "basePrice": 35000,
+      "dimensions": "90cm x 45cm x 180cm",
+      "description": "Lockable tall storage cabinet with adjustable shelves",
+      "hotspot": { "x": 65, "y": 50 }
+    },
+    {
+      "id": "RCP-001",
+      "name": "Reception Desk Modern",
+      "category": "Reception",
+      "room": "reception",
+      "basePrice": 95000,
+      "dimensions": "200cm x 80cm x 110cm",
+      "description": "Contemporary reception desk with LED lighting",
+      "hotspot": { "x": 50, "y": 55 }
+    }
+  ],
+  "materials": {
+    "wood": [
+      { "id": "WF-001", "name": "Walnut", "type": "wood", "priceMultiplier": 1.0, "image": "/images/materials/walnut.jpg" },
+      { "id": "WF-002", "name": "Oak", "type": "wood", "priceMultiplier": 0.9, "image": "/images/materials/oak.jpg" },
+      { "id": "WF-003", "name": "Mahogany", "type": "wood", "priceMultiplier": 1.2, "image": "/images/materials/mahogany.jpg" },
+      { "id": "WF-004", "name": "Cherry", "type": "wood", "priceMultiplier": 1.1, "image": "/images/materials/cherry.jpg" },
+      { "id": "WF-005", "name": "Maple", "type": "wood", "priceMultiplier": 0.95, "image": "/images/materials/maple.jpg" },
+      { "id": "WF-006", "name": "Teak", "type": "wood", "priceMultiplier": 1.3, "image": "/images/materials/teak.jpg" }
+    ],
+    "laminate": [
+      { "id": "LM-001", "name": "White Gloss", "type": "laminate", "priceMultiplier": 0.6 },
+      { "id": "LM-002", "name": "Black Matte", "type": "laminate", "priceMultiplier": 0.6 },
+      { "id": "LM-003", "name": "Grey Textured", "type": "laminate", "priceMultiplier": 0.65 },
+      { "id": "LM-004", "name": "Beige Stone", "type": "laminate", "priceMultiplier": 0.65 },
+      { "id": "LM-005", "name": "Wood Grain", "type": "laminate", "priceMultiplier": 0.7 },
+      { "id": "LM-006", "name": "Metallic Silver", "type": "laminate", "priceMultiplier": 0.75 }
+    ],
+    "fabric": [
+      { "id": "FB-001", "name": "Black Leather", "type": "fabric", "priceMultiplier": 1.4 },
+      { "id": "FB-002", "name": "Brown Leather", "type": "fabric", "priceMultiplier": 1.4 },
+      { "id": "FB-003", "name": "Navy Mesh", "type": "fabric", "priceMultiplier": 0.8 },
+      { "id": "FB-004", "name": "Grey Fabric", "type": "fabric", "priceMultiplier": 0.7 },
+      { "id": "FB-005", "name": "Red Executive", "type": "fabric", "priceMultiplier": 1.2 },
+      { "id": "FB-006", "name": "Beige Comfort", "type": "fabric", "priceMultiplier": 0.9 }
+    ]
+  },
+  "rooms": [
+    { "id": "reception", "name": "Reception Area", "panorama": "/images/panoramas/reception.jpg" },
+    { "id": "executive", "name": "Executive Office", "panorama": "/images/panoramas/executive.jpg" },
+    { "id": "workstation", "name": "Workstation Area", "panorama": "/images/panoramas/workstation.jpg" },
+    { "id": "conference", "name": "Conference Room", "panorama": "/images/panoramas/conference.jpg" }
+  ]
+}

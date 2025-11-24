@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>WoodEx Virtual Showroom - Interactive Office Furniture Experience</title>
+  <meta name="description" content="Experience WoodEx's premium office furniture collection in our immersive 360° virtual showroom. Customize and preview executive desks, workstations, and conference solutions." />
+  <meta name="keywords" content="virtual showroom, office furniture, executive desks, workstations, conference tables, furniture customization" />
+  <meta name="author" content="WoodEx" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="WoodEx Virtual Showroom" />
+  <meta property="og:description" content="Explore premium office furniture in our 360° interactive showroom" />
+  <meta property="og:url" content="https://woodex-showroom.com" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content="WoodEx Virtual Showroom" />
+  <meta property="twitter:description" content="Explore premium office furniture in our 360° interactive showroom" />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  
+  <!-- Preload critical fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Prevent FOUC -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #111827;
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+    }
+    
+    #root {
+      width: 100vw;
+      height: 100vh;
+    }
+    
+    .initial-loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #111827;
+    }
+    
+    .loader-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(253, 183, 19, 0.3);
+      border-top: 3px solid #FDB713;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <div class="initial-loader">
+      <div class="loader-spinner"></div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

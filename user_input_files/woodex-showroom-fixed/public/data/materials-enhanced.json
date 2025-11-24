@@ -1,0 +1,111 @@
+{
+  "wallColors": {
+    "warmWhites": [
+      { "id": "WC-001", "name": "Pearl White", "hex": "#F5F5F0", "category": "Warm Whites" },
+      { "id": "WC-002", "name": "Cream", "hex": "#FFFDD0", "category": "Warm Whites" },
+      { "id": "WC-003", "name": "Ivory", "hex": "#FFFFF0", "category": "Warm Whites" },
+      { "id": "WC-004", "name": "Beige", "hex": "#F5F5DC", "category": "Warm Whites" }
+    ],
+    "earthTones": [
+      { "id": "ET-001", "name": "Sand", "hex": "#C2B280", "category": "Earth Tones" },
+      { "id": "ET-002", "name": "Taupe", "hex": "#B38B6D", "category": "Earth Tones" },
+      { "id": "ET-003", "name": "Warm Gray", "hex": "#928E85", "category": "Earth Tones" },
+      { "id": "ET-004", "name": "Clay", "hex": "#B66325", "category": "Earth Tones" }
+    ],
+    "coolTones": [
+      { "id": "CT-001", "name": "Dove Gray", "hex": "#6D6875", "category": "Cool Tones" },
+      { "id": "CT-002", "name": "Slate", "hex": "#708090", "category": "Cool Tones" },
+      { "id": "CT-003", "name": "Light Blue-Gray", "hex": "#A7C7E7", "category": "Cool Tones" },
+      { "id": "CT-004", "name": "Sage", "hex": "#9CAF88", "category": "Cool Tones" }
+    ],
+    "accentColors": [
+      { "id": "AC-001", "name": "Soft Green", "hex": "#8FBC8F", "category": "Accent Colors" },
+      { "id": "AC-002", "name": "Muted Blue", "hex": "#6B8E9F", "category": "Accent Colors" },
+      { "id": "AC-003", "name": "Warm Terracotta", "hex": "#E27B58", "category": "Accent Colors" }
+    ]
+  },
+  "woodTextures": [
+    { "id": "WF-001", "name": "Walnut", "color": "#5D4037", "priceMultiplier": 1.0, "image": "/images/materials/walnut.jpg" },
+    { "id": "WF-002", "name": "Oak", "color": "#A1887F", "priceMultiplier": 0.9, "image": "/images/materials/oak.jpg" },
+    { "id": "WF-003", "name": "Mahogany", "color": "#6D4C41", "priceMultiplier": 1.2, "image": "/images/materials/mahogany.jpg" },
+    { "id": "WF-004", "name": "Cherry", "color": "#8D6E63", "priceMultiplier": 1.1, "image": "/images/materials/cherry.jpg" },
+    { "id": "WF-005", "name": "Maple", "color": "#BCAAA4", "priceMultiplier": 0.95, "image": "/images/materials/maple.jpg" },
+    { "id": "WF-006", "name": "Teak", "color": "#795548", "priceMultiplier": 1.3, "image": "/images/materials/teak.jpg" }
+  ],
+  "solidColors": [
+    { "id": "SC-001", "name": "Black", "color": "#212121", "priceMultiplier": 0.8 },
+    { "id": "SC-002", "name": "White", "color": "#FFFFFF", "priceMultiplier": 0.8 },
+    { "id": "SC-003", "name": "Gray", "color": "#757575", "priceMultiplier": 0.75 },
+    { "id": "SC-004", "name": "Navy", "color": "#1A237E", "priceMultiplier": 0.85 },
+    { "id": "SC-005", "name": "Charcoal", "color": "#36454F", "priceMultiplier": 0.8 }
+  ],
+  "laminates": [
+    { "id": "LM-001", "name": "White Gloss", "color": "#FFFFFF", "priceMultiplier": 0.6 },
+    { "id": "LM-002", "name": "Black Matte", "color": "#212121", "priceMultiplier": 0.6 },
+    { "id": "LM-003", "name": "Gray Textured", "color": "#757575", "priceMultiplier": 0.65 },
+    { "id": "LM-004", "name": "Beige Stone", "color": "#D7CCC8", "priceMultiplier": 0.65 },
+    { "id": "LM-005", "name": "Wood Grain", "color": "#A1887F", "priceMultiplier": 0.7 },
+    { "id": "LM-006", "name": "Metallic Silver", "color": "#9E9E9E", "priceMultiplier": 0.75 }
+  ],
+  "fabrics": [
+    { "id": "FB-001", "name": "Black Leather", "color": "#212121", "priceMultiplier": 1.4 },
+    { "id": "FB-002", "name": "Brown Leather", "color": "#5D4037", "priceMultiplier": 1.4 },
+    { "id": "FB-003", "name": "Navy Mesh", "color": "#1A237E", "priceMultiplier": 0.8 },
+    { "id": "FB-004", "name": "Gray Fabric", "color": "#616161", "priceMultiplier": 0.7 },
+    { "id": "FB-005", "name": "Red Executive", "color": "#C62828", "priceMultiplier": 1.2 },
+    { "id": "FB-006", "name": "Beige Comfort", "color": "#D7CCC8", "priceMultiplier": 0.9 },
+    { "id": "FB-007", "name": "Tan Leather", "color": "#C19A6B", "priceMultiplier": 1.35 },
+    { "id": "FB-008", "name": "White Leather", "color": "#F5F5F5", "priceMultiplier": 1.45 }
+  ],
+  "metalFinishes": [
+    { "id": "MF-001", "name": "Black Metal", "color": "#212121", "priceMultiplier": 1.0 },
+    { "id": "MF-002", "name": "Chrome", "color": "#C0C0C0", "priceMultiplier": 1.15, "metallic": true },
+    { "id": "MF-003", "name": "Brushed Steel", "color": "#A8A9AD", "priceMultiplier": 1.1, "metallic": true },
+    { "id": "MF-004", "name": "Bronze", "color": "#CD7F32", "priceMultiplier": 1.2, "metallic": true },
+    { "id": "MF-005", "name": "Gold", "color": "#FFD700", "priceMultiplier": 1.3, "metallic": true },
+    { "id": "MF-006", "name": "White Metal", "color": "#F5F5F5", "priceMultiplier": 1.05 },
+    { "id": "MF-007", "name": "Silver", "color": "#C0C0C0", "priceMultiplier": 1.15, "metallic": true }
+  ],
+  "presets": {
+    "executiveSuite": {
+      "name": "Executive Suite",
+      "description": "Premium materials for executive spaces",
+      "wallColor": "WC-004",
+      "tableSurface": "WF-003",
+      "tableFrame": "MF-004",
+      "chairSeat": "FB-001",
+      "chairBack": "FB-001",
+      "chairFrame": "MF-002"
+    },
+    "modernMinimalist": {
+      "name": "Modern Minimalist",
+      "description": "Clean lines and neutral palette",
+      "wallColor": "WC-001",
+      "tableSurface": "SC-002",
+      "tableFrame": "MF-001",
+      "chairSeat": "FB-004",
+      "chairBack": "FB-004",
+      "chairFrame": "MF-006"
+    },
+    "warmTraditional": {
+      "name": "Warm Traditional",
+      "description": "Classic wood tones",
+      "wallColor": "ET-002",
+      "tableSurface": "WF-004",
+      "tableFrame": "WF-004",
+      "chairSeat": "FB-002",
+      "chairBack": "FB-002",
+      "chairFrame": "WF-001"
+    },
+    "contemporaryBold": {
+      "name": "Contemporary Bold",
+      "description": "Mixed materials with contrast",
+      "wallColor": "CT-002",
+      "tableSurface": "WF-001",
+      "tableFrame": "MF-005",
+      "chairSeat": "FB-005",
+      "chairBack": "SC-001",
+      "chairFrame": "MF-003"
+    }
+  }
+}
