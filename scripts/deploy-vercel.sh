@@ -18,7 +18,7 @@ if [ ! -d "dist" ]; then
 fi
 
 # Deploy using vercel CLI. Pass token via $VERCEL_TOKEN.
-# We use the --confirm flag to avoid interactive prompts in CI.
-vercel --prod --token "$VERCEL_TOKEN" --confirm --name "$PROJECT_NAME" --cwd .
+# Use the non-interactive `--yes` flag to avoid prompts in CI and skip deprecated flags.
+vercel deploy --prod --token "$VERCEL_TOKEN" --yes --cwd .
 
 echo "Deployment requested for project: $PROJECT_NAME"

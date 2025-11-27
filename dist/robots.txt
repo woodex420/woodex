@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://vercel.com/woodexs-projects/woodex/sitemap.xml
