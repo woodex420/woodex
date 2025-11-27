@@ -26,19 +26,20 @@ jobs:
         run: pnpm install --prefer-offline
 
       - name: Build
-        run: pnpm run build:prod
-
-      - name: Deploy to Vercel using vercel/action
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          # path: . # optional
-          args: --prod
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_STRIPE_PUBLISHABLE_KEY: ${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+        run: pnpm run build:prod
+
+      - name: Deploy to Vercel
+        uses: vercel/action@v5
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: team_WjuZYtmr7hAH4O7LLhd9vLmr
+          vercel-project-id: prj_JsHLlBNUEEIB671IjdeX2FjcR1UV
+          prod: true
 
       - name: Smoke test
         run: |
