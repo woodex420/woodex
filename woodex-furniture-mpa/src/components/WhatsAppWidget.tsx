@@ -70,8 +70,8 @@ const WhatsAppWidget = ({ customerPhone, customerName, customerId }: WhatsAppWid
     setIsTyping(true);
 
     try {
-      const supabaseUrl = 'https://vocqqajpznqyopjcymer.supabase.co';
-      const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvY3FxYWpwem5xeW9wamN5bWVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MTM5MTMsImV4cCI6MjA3NzI4OTkxM30.b2ncZs7ETkh5_I9p7QP0kgUchDO166y5jUG-Na5yuEM';
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
+      const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
       // Track journey event
       await trackJourneyEvent('whatsapp_message_sent', {
@@ -155,10 +155,10 @@ const WhatsAppWidget = ({ customerPhone, customerName, customerId }: WhatsAppWid
     if (!customerId) return;
 
     try {
-      const supabaseUrl = 'https://vocqqajpznqyopjcymer.supabase.co';
-      const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvY3FxYWpwem5xeW9wamN5bWVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MTM5MTMsImV4cCI6MjA3NzI4OTkxM30.b2ncZs7ETkh5_I9p7QP0kgUchDO166y5jUG-Na5yuEM';
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
+      const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-      const response = await fetch(`${supabaseUrl}/functions/v1/whatsapp-chat-messages`, {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/whatsapp-chat-messages`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${supabaseAnonKey}`,
@@ -195,10 +195,10 @@ const WhatsAppWidget = ({ customerPhone, customerName, customerId }: WhatsAppWid
 
   const trackJourneyEvent = async (eventType: string, eventData: any) => {
     try {
-      const supabaseUrl = 'https://vocqqajpznqyopjcymer.supabase.co';
-      const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvY3FxYWpwem5xeW9wamN5bWVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MTM5MTMsImV4cCI6MjA3NzI4OTkxM30.b2ncZs7ETkh5_I9p7QP0kgUchDO166y5jUG-Na5yuEM';
+      const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
+      const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-      await fetch(`${supabaseUrl}/functions/v1/whatsapp-journey-tracker`, {
+      await fetch(`${SUPABASE_URL}/functions/v1/whatsapp-journey-tracker`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${supabaseAnonKey}`,

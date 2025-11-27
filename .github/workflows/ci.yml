@@ -1,0 +1,39 @@
+name: CI Build & Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --prefer-offline
+      
+      - name: Run linter
+        run: pnpm lint
+        continue-on-error: true
+      
+      - name: Build project
+        run: pnpm run build:prod
+      
+      - name: Upload dist for deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-build
+          path: dist
+          retention-days: 7

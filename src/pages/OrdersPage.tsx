@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase, Profile, Order, Delivery, Return } from '../lib/supabase';
+import { supabase, getSupabaseAnonKey, Profile, Order, Delivery, Return } from '../lib/supabase';
 import { Package, Truck, RefreshCw, Search, Filter, Eye, Calendar, DollarSign } from 'lucide-react';
 
 interface OrdersPageProps {
@@ -129,22 +129,35 @@ const OrdersPage = ({ profile }: OrdersPageProps) => {
     try {
       setUpdating(true);
 
-      const response = await fetch(
-        'https://vocqqajpznqyopjcymer.supabase.co/functions/v1/order-status-updater',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabase.auth.getSession()}`
-          },
-          body: JSON.stringify({
-            order_id: orderId,
-            new_status: newStatus,
-            changed_by: profile?.id || 'admin',
-            notes: `Status updated by ${profile?.full_name || 'Admin'}`
-          })
-        }
-      );
+      // Resolve current session token (if present) to authorize the Edge Function.
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+
+      // Use the Supabase function URL from the project's Supabase instance.
+      const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/order-status-updater`;
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        // Fall back to anon key for client-side calls if function allows it.
+        const anon = getSupabaseAnonKey();
+        if (anon) headers['apikey'] = anon;
+      }
+
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          order_id: orderId,
+          new_status: newStatus,
+          changed_by: profile?.id || 'admin',
+          notes: `Status updated by ${profile?.full_name || 'Admin'}`
+        })
+      });
 
       if (response.ok) {
         await fetchOrders();
