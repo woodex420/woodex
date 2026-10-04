@@ -32,7 +32,7 @@ const brightnessTone: Record<Material['brightness'], string> = {
 };
 
 const MaterialsPage = () => {
-  const { rows, source, isLoading, isError, error } = useMaterials();
+  const { rows, source, isLoading, isError, error, degraded } = useMaterials();
   const [category, setCategory] = useState<string>('all');
   const [search, setSearch] = useState('');
 
@@ -72,11 +72,21 @@ const MaterialsPage = () => {
 
       {source === 'seed' && !isLoading && (
         <div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          Showing the imported <code className="font-mono">seed/catalog.json</code> snapshot because
-          Supabase is not configured on this build. Run{' '}
-          <code className="font-mono">node scripts/import-catalog.mjs --apply</code> and set{' '}
-          <code className="font-mono">VITE_SUPABASE_URL</code> /{' '}
-          <code className="font-mono">VITE_SUPABASE_ANON_KEY</code> to manage these live.
+          {degraded ? (
+            <>
+              <strong>Live Supabase read failed — showing the seed snapshot.</strong>
+              <br />
+              <span className="font-mono text-xs">{degraded}</span>
+            </>
+          ) : (
+            <>
+              Showing the imported <code className="font-mono">seed/catalog.json</code> snapshot
+              because Supabase is not configured on this build. Run{' '}
+              <code className="font-mono">node scripts/import-catalog.mjs --apply</code> and set{' '}
+              <code className="font-mono">VITE_SUPABASE_URL</code> /{' '}
+              <code className="font-mono">VITE_SUPABASE_ANON_KEY</code> to manage these live.
+            </>
+          )}
         </div>
       )}
 

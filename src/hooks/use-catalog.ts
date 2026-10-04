@@ -62,15 +62,45 @@ export interface QueryResult<T> {
   isLoading: boolean;
   isError: boolean;
   error: Error | null;
+  /**
+   * Set when Supabase IS configured but the live read failed, so the seed
+   * snapshot is shown instead of a blank screen. The common cause during the
+   * migration window is a table that does not exist yet (`42P01`), i.e. the
+   * catalog-bridge migration has not been applied to the project.
+   */
+  degraded: string | null;
 }
 
+type Live<T> = { rows: T[]; source: DataSource; degraded: string | null };
+
+/**
+ * Runs a live Supabase read, falling back to the seed snapshot on failure so a
+ * missing table or an RLS denial degrades to "demo data with a warning" rather
+ * than an empty dashboard.
+ */
+const withSeedFallback = async <T>(
+  live: () => Promise<T[]>,
+  fromSeed: () => Promise<T[]>,
+): Promise<Live<T>> => {
+  try {
+    return { rows: await live(), source: 'supabase', degraded: null };
+  } catch (err: any) {
+    const rows = await fromSeed();
+    const msg = err?.message ?? String(err);
+    const reason = /42P01|does not exist/i.test(msg)
+      ? 'table not found - apply supabase/migrations/1762500000_woodex_catalog_bridge.sql'
+      : msg;
+    return { rows, source: 'seed', degraded: reason };
+  }
+};
+
 const asResult = <T,>(
-  rows: T[] | undefined,
-  source: DataSource,
+  data: Live<T> | undefined,
   q: { isLoading: boolean; isError: boolean; error: Error | null },
 ): QueryResult<T> => ({
-  rows: rows ?? [],
-  source,
+  rows: data?.rows ?? [],
+  source: data?.source ?? 'seed',
+  degraded: data?.degraded ?? null,
   isLoading: q.isLoading,
   isError: q.isError,
   error: q.error,
@@ -80,91 +110,91 @@ const asResult = <T,>(
 export function useMaterials(): QueryResult<Material> {
   const q = useQuery({
     queryKey: ['materials', isSupabaseConfigured],
-    queryFn: async (): Promise<{ rows: Material[]; source: DataSource }> => {
-      if (!isSupabaseConfigured) {
-        const seed = await loadSeed();
-        return { rows: (seed.materials ?? []) as Material[], source: 'seed' };
-      }
-      const { data, error } = await supabase
-        .from('materials')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order');
-      if (error) throw error;
-      return { rows: (data ?? []) as Material[], source: 'supabase' };
-    },
+    queryFn: () =>
+      withSeedFallback<Material>(
+        async () => {
+          const { data, error } = await supabase
+            .from('materials')
+            .select('*')
+            .eq('is_active', true)
+            .order('sort_order');
+          if (error) throw error;
+          return (data ?? []) as Material[];
+        },
+        async () => ((await loadSeed()).materials ?? []) as Material[],
+      ),
     staleTime: 5 * 60 * 1000,
   });
 
-  return asResult(q.data?.rows, q.data?.source ?? 'seed', q);
+  return asResult(q.data, q);
 }
 
 // ── products ─────────────────────────────────────────────────────────────
+const seedToProduct = (p: any): CatalogProduct => ({
+  source_id: p.id,
+  name: p.name,
+  slug: p.id,
+  category: p.category,
+  subcategory: p.subcategory ?? null,
+  series: p.series ?? null,
+  base_price: p.price ?? 0,
+  original_price: p.originalPrice ?? null,
+  currency: 'PKR',
+  short_description: p.shortDescription ?? null,
+  in_stock: !!p.inStock,
+  is_best_seller: !!p.isBestSeller,
+  rating: p.rating ?? 0,
+  reviews_count: p.reviews ?? 0,
+});
+
 export function useProducts(): QueryResult<CatalogProduct> {
   const q = useQuery({
     queryKey: ['products', isSupabaseConfigured],
-    queryFn: async (): Promise<{ rows: CatalogProduct[]; source: DataSource }> => {
-      if (!isSupabaseConfigured) {
-        const seed = await loadSeed();
-        const rows = (seed.products ?? []).map((p: any) => ({
-          source_id: p.id,
-          name: p.name,
-          slug: p.id,
-          category: p.category,
-          subcategory: p.subcategory ?? null,
-          series: p.series ?? null,
-          base_price: p.price ?? 0,
-          original_price: p.originalPrice ?? null,
-          currency: 'PKR',
-          short_description: p.shortDescription ?? null,
-          in_stock: !!p.inStock,
-          is_best_seller: !!p.isBestSeller,
-          rating: p.rating ?? 0,
-          reviews_count: p.reviews ?? 0,
-        })) as CatalogProduct[];
-        return { rows, source: 'seed' };
-      }
-      const { data, error } = await supabase
-        .from('products')
-        .select(
-          'source_id,name,slug,subcategory,series_id,base_price,original_price,currency,short_description,stock_status,is_best_seller,rating,reviews_count,is_active',
-        )
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      const rows = (data ?? []).map((p: any) => ({
-        ...p,
-        category: p.metadata?.storefront_category ?? '',
-        series: p.series_id,
-        in_stock: p.stock_status === 'in_stock',
-      })) as CatalogProduct[];
-      return { rows, source: 'supabase' };
-    },
+    queryFn: () =>
+      withSeedFallback<CatalogProduct>(
+        async () => {
+          const { data, error } = await supabase
+            .from('products')
+            .select(
+              'source_id,name,slug,subcategory,series_id,base_price,original_price,currency,short_description,stock_status,is_best_seller,rating,reviews_count,is_active,metadata',
+            )
+            .eq('is_active', true)
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          return (data ?? []).map((p: any) => ({
+            ...p,
+            category: p.metadata?.storefront_category ?? '',
+            series: p.series_id,
+            in_stock: p.stock_status === 'in_stock',
+          })) as CatalogProduct[];
+        },
+        async () => ((await loadSeed()).products ?? []).map(seedToProduct),
+      ),
     staleTime: 5 * 60 * 1000,
   });
 
-  return asResult(q.data?.rows, q.data?.source ?? 'seed', q);
+  return asResult(q.data, q);
 }
 
 // ── series ───────────────────────────────────────────────────────────────
 export function useSeries(): QueryResult<Series> {
   const q = useQuery({
     queryKey: ['series', isSupabaseConfigured],
-    queryFn: async (): Promise<{ rows: Series[]; source: DataSource }> => {
-      if (!isSupabaseConfigured) {
-        const seed = await loadSeed();
-        return { rows: (seed.series ?? []) as Series[], source: 'seed' };
-      }
-      const { data, error } = await supabase
-        .from('series')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order');
-      if (error) throw error;
-      return { rows: (data ?? []) as Series[], source: 'supabase' };
-    },
+    queryFn: () =>
+      withSeedFallback<Series>(
+        async () => {
+          const { data, error } = await supabase
+            .from('series')
+            .select('*')
+            .eq('is_active', true)
+            .order('sort_order');
+          if (error) throw error;
+          return (data ?? []) as Series[];
+        },
+        async () => ((await loadSeed()).series ?? []) as Series[],
+      ),
     staleTime: 5 * 60 * 1000,
   });
 
-  return asResult(q.data?.rows, q.data?.source ?? 'seed', q);
+  return asResult(q.data, q);
 }
