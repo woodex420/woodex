@@ -5,6 +5,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
+  isLocalAdminEnabled,
   isLocalAdminLogin,
   signInLocalAdmin,
   type LocalAdminSession,
@@ -27,6 +28,13 @@ const LoginPage = ({ onLocalLogin }: LoginPageProps) => {
   /** Branch 1: the conditional local `admin` / `admin` login. */
   const handleLocalAdminLogin = () => {
     const session = signInLocalAdmin();
+
+    if (!session) {
+      // Gate is closed (production build without VITE_ENABLE_LOCAL_ADMIN).
+      setError('Local admin access is disabled on this deployment.');
+      return;
+    }
+
     setNotice(`Signed in as ${session.profile.full_name} (local admin).`);
 
     if (onLocalLogin) {
@@ -172,7 +180,8 @@ const LoginPage = ({ onLocalLogin }: LoginPageProps) => {
             </button>
           </form>
 
-          {/* Local admin shortcut */}
+          {/* Local admin shortcut - hidden entirely when the gate is closed */}
+          {isLocalAdminEnabled && (
           <div className="mt-6 rounded-md border border-separator bg-muted p-4">
             <div className="flex items-start gap-3">
               <ShieldCheck className="h-5 w-5 text-text-primary mt-0.5 shrink-0" />
@@ -197,6 +206,7 @@ const LoginPage = ({ onLocalLogin }: LoginPageProps) => {
               </div>
             </div>
           </div>
+          )}
 
           {!isSupabaseConfigured && (
             <div className="mt-4 flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-900">

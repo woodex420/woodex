@@ -4,6 +4,12 @@
 
 ## Local Admin Account (no Supabase required) ✅
 
+> 🔒 **Gated.** Always available in the Vite dev server. In a **production
+> build it is OFF by default** and only enabled when
+> `VITE_ENABLE_LOCAL_ADMIN=true` is set. Closing the gate also destroys any
+> session persisted while it was open, so a stale `localStorage` entry cannot
+> keep the bypass alive. Do not enable it on a deployment holding real data.
+
 The login page has a **conditional branch**: if the username is `admin` and the
 password is `admin`, the app signs you in locally — no Supabase project, no
 network call, no user row in `auth.users`. Any other username/password

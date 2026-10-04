@@ -37,6 +37,19 @@ const ADMIN_IDENTIFIERS: readonly string[] = [
 
 const DEMO_SESSION_KEY = 'woodex.local-admin-session';
 
+/**
+ * Whether the conditional local admin login is available at all.
+ *
+ * Always on in the Vite dev server. In a production build it is OFF unless
+ * `VITE_ENABLE_LOCAL_ADMIN` is explicitly set to a truthy value - a hardcoded
+ * client-side bypass is not acceptable once the app holds real business data.
+ */
+const TRUTHY = ['true', '1', 'yes', 'on'];
+
+export const isLocalAdminEnabled: boolean =
+  import.meta.env.DEV === true ||
+  TRUTHY.includes(String(import.meta.env.VITE_ENABLE_LOCAL_ADMIN || '').trim().toLowerCase());
+
 /** Stable pseudo user id used for the local admin session. */
 export const LOCAL_ADMIN_ID = 'local-admin';
 
@@ -98,6 +111,7 @@ export function isLocalAdminLogin(
   identifier: string = '',
   password: string = '',
 ): boolean {
+  if (!isLocalAdminEnabled) return false;
   const id = identifier.trim().toLowerCase();
   return ADMIN_IDENTIFIERS.includes(id) && password === ADMIN_PASSWORD;
 }
@@ -106,7 +120,13 @@ export function isLocalAdminLogin(
  * Creates and persists the local admin session. Returns the session so the
  * caller can hydrate React state without a page reload.
  */
-export function signInLocalAdmin(): LocalAdminSession {
+export function signInLocalAdmin(): LocalAdminSession | null {
+  if (!isLocalAdminEnabled) {
+    // Never mint a bypass session when the gate is closed.
+    clearLocalAdminSession();
+    return null;
+  }
+
   const session = buildSession();
   try {
     window.localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(session));
@@ -119,6 +139,13 @@ export function signInLocalAdmin(): LocalAdminSession {
 
 /** Reads (and validates) a previously persisted local admin session. */
 export function getLocalAdminSession(): LocalAdminSession | null {
+  // Closing the gate must also invalidate any session persisted while it was
+  // open, otherwise a stale localStorage entry keeps the bypass alive.
+  if (!isLocalAdminEnabled) {
+    clearLocalAdminSession();
+    return null;
+  }
+
   try {
     const raw = window.localStorage.getItem(DEMO_SESSION_KEY);
     if (!raw) return null;
