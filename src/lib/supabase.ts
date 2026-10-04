@@ -2,8 +2,39 @@ import { createClient } from '@supabase/supabase-js';
 
 // Read Supabase configuration from environment. Set these in your deployment
 // environment or local `.env` file (see `complete-project/.env.example`).
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const envUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim();
+const envKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+
+// Values shipped in `.env.example` / untouched `.env` files are placeholders,
+// not credentials. Treat them as "not configured".
+const PLACEHOLDER_HINTS = ['your_', 'placeholder', 'changeme', 'change_me', 'xxx', 'todo'];
+
+const looksLikePlaceholder = (value: string) => {
+  const v = value.toLowerCase();
+  return PLACEHOLDER_HINTS.some((hint) => v.includes(hint));
+};
+
+// Supabase anon keys are either legacy JWTs (`eyJ...`) or the newer publishable
+// keys (`sb_publishable_...`). Anything else is not a usable credential.
+const looksLikeAnonKey = (value: string) =>
+  (/^eyJ[\w-]+\.[\w-]+\.[\w-]+$/.test(value) || value.startsWith('sb_publishable_')) &&
+  !looksLikePlaceholder(value);
+
+/**
+ * `true` only when a real Supabase URL + anon key are present in the
+ * environment. When `false` the app still boots (and the local `admin` login
+ * still works) instead of crashing on `createClient('')`, and the login page
+ * can explain why email sign-in is unavailable.
+ */
+export const isSupabaseConfigured =
+  /^https?:\/\/[^\s]+/.test(envUrl) && looksLikeAnonKey(envKey);
+
+// `createClient()` throws on an empty URL, which would blank out the whole app
+// when the env vars are missing, so fall back to an inert project reference.
+const supabaseUrl = isSupabaseConfigured ? envUrl : 'https://not-configured.supabase.co';
+const supabaseAnonKey = isSupabaseConfigured
+  ? envKey
+  : 'supabase-not-configured-placeholder-key';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: { persistSession: true }

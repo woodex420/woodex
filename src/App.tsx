@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { supabase, type Profile } from './lib/supabase';
+import { supabase, isSupabaseConfigured, type Profile } from './lib/supabase';
+import {
+  getLocalAdminSession,
+  type LocalAdminSession,
+} from './lib/auth';
 
 // Pages
 import LoginPage from './pages/LoginPage';
@@ -24,22 +28,60 @@ function App() {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  // True while the signed-in session came from the local `admin` login.
+  const [isLocalSession, setIsLocalSession] = useState(false);
+
+  const applyLocalSession = (session: LocalAdminSession) => {
+    setIsLocalSession(true);
+    setUser(session.user);
+    setProfile(session.profile);
+    setLoading(false);
+  };
+
+  const clearSessionState = () => {
+    setIsLocalSession(false);
+    setUser(null);
+    setProfile(null);
+  };
 
   useEffect(() => {
-    // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
+    let cancelled = false;
+
+    // The local admin session wins: it needs no backend at all.
+    const local = getLocalAdminSession();
+    if (local) {
+      applyLocalSession(local);
+    } else if (isSupabaseConfigured) {
+      // Check active session
+      supabase.auth
+        .getSession()
+        .then(({ data: { session } }) => {
+          if (cancelled) return;
+          setUser(session?.user ?? null);
+          if (session?.user) {
+            fetchProfile(session.user.id);
+          } else {
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.error('Error restoring Supabase session:', error);
+          if (!cancelled) setLoading(false);
+        });
+    } else {
+      setLoading(false);
+    }
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (cancelled) return;
+      const stillLocal = getLocalAdminSession();
+      if (stillLocal) {
+        applyLocalSession(stillLocal);
+        return;
+      }
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
@@ -49,10 +91,14 @@ function App() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchProfile = async (userId: string) => {
+    setIsLocalSession(false);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -81,11 +127,15 @@ function App() {
   }
 
   if (!user) {
-    return <LoginPage />;
+    return <LoginPage onLocalLogin={applyLocalSession} />;
   }
 
   return (
-    <DashboardLayout profile={profile}>
+    <DashboardLayout
+      profile={profile}
+      isLocalSession={isLocalSession}
+      onSignOut={clearSessionState}
+    >
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage profile={profile} />} />
