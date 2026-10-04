@@ -15,6 +15,7 @@ import {
   MessageCircle,
   BarChart3,
   Settings,
+  Layers,
   LogOut,
   Menu,
   X,
@@ -42,6 +43,7 @@ const DashboardLayout = ({
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Products', href: '/products', icon: Package },
+    { name: 'Materials', href: '/materials', icon: Layers },
     { name: 'Customers', href: '/customers', icon: Users },
     { name: 'Quotations', href: '/quotations', icon: FileText },
     { name: 'Orders', href: '/orders', icon: ShoppingCart },

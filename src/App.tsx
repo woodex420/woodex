@@ -10,6 +10,7 @@ import {
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ProductsPage from './pages/ProductsPage';
+import MaterialsPage from './pages/MaterialsPage';
 import CustomersPage from './pages/CustomersPage';
 import QuotationsPage from './pages/QuotationsPage';
 import OrdersPage from './pages/OrdersPage';
@@ -140,6 +141,7 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage profile={profile} />} />
         <Route path="/products" element={<ProductsPage profile={profile} />} />
+        <Route path="/materials" element={<MaterialsPage />} />
         <Route path="/customers" element={<CustomersPage profile={profile} />} />
         <Route path="/quotations" element={<QuotationsPage profile={profile} />} />
         <Route path="/orders" element={<OrdersPage profile={profile} />} />

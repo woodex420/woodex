@@ -2,9 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Design tokens.
+ *
+ * tailwind.config.js already referenced hsl(var(--border)), hsl(var(--background))
+ * and friends, but index.css only ever defined the --sidebar-* set - so every
+ * shadcn-style utility silently resolved to nothing. This is the missing half,
+ * mapped onto the existing Workspace.AE identity rather than shadcn's default
+ * slate, so the reused components render in Woodex's own palette:
+ *
+ *   #333333 text-primary    -> foreground / primary
+ *   #484848 text-secondary  -> muted-foreground
+ *   #FFFFFF surface-base    -> background / card
+ *   #F5F5F5 muted           -> muted / secondary
+ *   #232323 primary-alt     -> primary hover
+ *   #EF4444 destructive     -> destructive
+ *   separator rgba(183,183,183,.11) over white ~= 0 0% 96.9%
+ */
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+
+    --primary: 0 0% 20%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 20%;
+
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 28.2%;
+
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 20%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 32.1 94.6% 43.7%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 0 0% 96.9%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 20%;
+
     --radius: 0.5rem;
+
+    --chart-1: 0 0% 20%;
+    --chart-2: 0 0% 38%;
+    --chart-3: 0 0% 55%;
+    --chart-4: 32.1 94.6% 43.7%;
+    --chart-5: 142.1 76.2% 36.3%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -12,22 +70,69 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 12%;
+
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 68%;
+
+    --accent: 0 0% 18%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --success: 142.1 70.6% 45.3%;
+    --success-foreground: 0 0% 98%;
+
+    --warning: 32.1 94.6% 53.7%;
+    --warning-foreground: 0 0% 12%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 22%;
+    --ring: 0 0% 83%;
+
+    --chart-1: 0 0% 95%;
+    --chart-2: 0 0% 72%;
+    --chart-3: 0 0% 55%;
+    --chart-4: 32.1 94.6% 53.7%;
+    --chart-5: 142.1 70.6% 45.3%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 224.3 76.3% 48.2%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
-
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
 
 img {
   object-position: top;
