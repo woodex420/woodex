@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { supabase, type Profile } from '../lib/supabase';
+import { type Profile } from '../lib/supabase';
+import { signOutOfEverything } from '../lib/auth';
 import {
   LayoutDashboard,
   Package,
@@ -14,6 +15,7 @@ import {
   MessageCircle,
   BarChart3,
   Settings,
+  Layers,
   LogOut,
   Menu,
   X,
@@ -22,9 +24,18 @@ import {
 interface DashboardLayoutProps {
   children: ReactNode;
   profile: Profile | null;
+  /** True when the active session came from the local `admin` login. */
+  isLocalSession?: boolean;
+  /** Lets the parent drop its auth state (needed for the local session). */
+  onSignOut?: () => void;
 }
 
-const DashboardLayout = ({ children, profile }: DashboardLayoutProps) => {
+const DashboardLayout = ({
+  children,
+  profile,
+  isLocalSession = false,
+  onSignOut,
+}: DashboardLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,6 +43,7 @@ const DashboardLayout = ({ children, profile }: DashboardLayoutProps) => {
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Products', href: '/products', icon: Package },
+    { name: 'Materials', href: '/materials', icon: Layers },
     { name: 'Customers', href: '/customers', icon: Users },
     { name: 'Quotations', href: '/quotations', icon: FileText },
     { name: 'Orders', href: '/orders', icon: ShoppingCart },
@@ -45,7 +57,12 @@ const DashboardLayout = ({ children, profile }: DashboardLayoutProps) => {
   ];
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await signOutOfEverything();
+    if (onSignOut) {
+      onSignOut();
+      navigate('/', { replace: true });
+      return;
+    }
     navigate('/');
   };
 
@@ -67,6 +84,14 @@ const DashboardLayout = ({ children, profile }: DashboardLayoutProps) => {
           </div>
 
           <div className="flex items-center gap-4">
+            {isLocalSession && (
+              <span
+                title="Signed in with the local admin account (no Supabase session)"
+                className="rounded-full border border-separator bg-muted px-3 py-1 text-xs font-medium text-text-secondary"
+              >
+                Local admin
+              </span>
+            )}
             <div className="hidden md:block text-right">
               <p className="text-sm font-semibold text-text-primary">{profile?.full_name}</p>
               <p className="text-xs text-text-secondary capitalize">{profile?.role}</p>

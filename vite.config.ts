@@ -18,5 +18,18 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    // Bind to every interface so the app is reachable from preview/tunnel hosts
+    // (e.g. the Vercel-style sandbox preview), not just localhost.
+    host: '0.0.0.0',
+    port: 3000,
+    // Dev-server only: accept requests forwarded from a proxied preview host.
+    allowedHosts: true,
+  },
+  preview: {
+    host: '0.0.0.0',
+    port: 3000,
+    allowedHosts: true,
+  },
 })
 

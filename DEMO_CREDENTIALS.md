@@ -2,7 +2,74 @@
 
 > ⚠️ **IMPORTANT**: These are temporary demo accounts for testing purposes only. They should be replaced with proper authentication before production deployment.
 
-## Admin Account
+## Local Admin Account (no Supabase required) ✅
+
+> 🔒 **Gated.** Always available in the Vite dev server. In a **production
+> build it is OFF by default** and only enabled when
+> `VITE_ENABLE_LOCAL_ADMIN=true` is set. Closing the gate also destroys any
+> session persisted while it was open, so a stale `localStorage` entry cannot
+> keep the bypass alive. Do not enable it on a deployment holding real data.
+
+The login page has a **conditional branch**: if the username is `admin` and the
+password is `admin`, the app signs you in locally — no Supabase project, no
+network call, no user row in `auth.users`. Any other username/password
+combination still goes through normal Supabase authentication.
+
+### Username
+```
+admin
+```
+
+### Password
+```
+admin
+```
+
+### How it works
+
+| Step | Behaviour |
+| --- | --- |
+| Submit `admin` / `admin` | `isLocalAdminLogin()` matches → a session is minted and stored in `localStorage` under `woodex.local-admin-session` |
+| Submit anything else | Falls through to `supabase.auth.signInWithPassword()` exactly as before |
+| Reload the page | The persisted local session is restored, so you stay signed in |
+| Click **Logout** | The local session is cleared (and Supabase is signed out too, when configured) |
+
+The local session signs you in as a synthetic `admin` profile
+(`Administrator`, role `admin`), so every dashboard route renders and the
+header shows a **Local admin** badge.
+
+Also accepted as the username: `ADMIN` (case-insensitive), `admin@woodex.local`,
+`admin@woodex-demo.com`. The password must match exactly.
+
+### Implementation
+
+- `src/lib/auth.ts` — the conditional check, session minting/persistence, and sign-out
+- `src/pages/LoginPage.tsx` — username-or-email field + the conditional branch
+- `src/App.tsx` — restores a local session on boot (takes priority over Supabase)
+- `src/layouts/DashboardLayout.tsx` — logout clears the local session
+
+### ⚠️ Security caveat
+
+This gate lives entirely in the browser, so **it is not access control**. The
+`admin` / `admin` pair is visible in the shipped JavaScript bundle and to anyone
+who reads this file. It exists to make the demo reachable. Real data access is
+still governed by Supabase Row Level Security — with the local admin you get the
+UI, but tables stay empty until Supabase is configured with real credentials.
+
+Before production: change or remove `ADMIN_USERNAME` / `ADMIN_PASSWORD` in
+`src/lib/auth.ts`, or delete the local branch entirely.
+
+### Note on data
+
+The local admin unlocks the **interface**. Product/customer/order data is still
+fetched from Supabase, so pages show empty states (and `0` counters) when
+`VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` are not set. When they are
+missing or still placeholders, the login page shows an amber notice explaining
+that email sign-in is disabled.
+
+---
+
+## Supabase Admin Account
 
 ### Email
 ```
@@ -122,8 +189,9 @@ WHERE email = 'admin@woodex-demo.com';
 - Check browser console for error messages
 
 ### Accessing Live Deployment
-- The live deployment at `https://woodex-store.vercel.app/` is not accessible with these demo credentials
-- Contact @woodex420 for temporary access or instructions to set up your own instance
+- The live deployment at `https://woodex-store.vercel.app/` **is** reachable with the local admin account: username `admin`, password `admin` (see the top of this file)
+- The Supabase demo account (`admin@woodex-demo.com`) only works if that user was actually created in the project's Supabase instance
+- Deep links such as `/dashboard` are handled by the SPA rewrite in `vercel.json`; without it Vercel returns `404: NOT_FOUND` on a hard refresh
 
 ## Alternative: Run Locally
 
